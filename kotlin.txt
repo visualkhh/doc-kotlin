@@ -1,0 +1,6 @@
+https://kotlinlang.org/docs/reference/
+https://kotlinlang.org/docs/kotlin-docs.pdf
+https://www.manning.com/books/kotlin-in-action#downloads
+
+
+https://kotlinlang.org/docs/tutorials/javascript/kotlin-to-javascript/kotlin-to-javascript.html
