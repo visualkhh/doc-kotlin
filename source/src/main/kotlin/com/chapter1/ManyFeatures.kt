@@ -1,5 +1,7 @@
 package com.chapter1
 
+import kotlin.reflect.KClass
+
 class ManyFeatures{
     //분리 선언(Destructuring Declarations)
     /*
@@ -459,5 +461,359 @@ fun main(args: Array<String>) {
     //안전한 호출
     //두 번째는 안전 호출 연산자인 ?. 를 사용하는 것이다:
     //b?.length
+    //이 코드는 b 가 null이 아니면 b.length 를 리턴하고 그렇지 않으면 null 을 리턴한다. 이 식의 타입은 Int? 이다.
 
+
+    //안전 호출은 체인에서 유용하다. Employee 타입의 Bob이 Department에 속할(또는 속하지 않을) 수 있고, department가 또 다른 Employee를 department의 head
+    //로 가질 수 있다고 할 때, 존재할 수도 있는 Bod의 department의 head를 구하는 코드를 다음과 같이 작성할 수 있다:
+    //bob?.department?.head?.name
+
+
+
+    //이 체인은 프로퍼티 중 하나라도 null이면 null 을 리턴한다.
+    //non-null 값에만 특정 오퍼레이션을 수행하고 싶다면 안전 호출 연산자를 let 과 함게 사용하면 된다:
+    //val listWithNulls: List<String?> = listOf("A", null)
+    //for (item in listWithNulls) {
+    //item?.let { println(it) } // A를 출력하고 null을 무시
+    //}
+
+
+
+    //엘비스 연산자
+    //null 가능 레퍼런스인 r 에 대해, " r 이 null이 아니면 그것을 사용하고 그렇지 않으면 다른 not-null 값인 x 를 사용한다"는 코드를 다음과 같이 작성할 수 있다:
+    //val l: Int = if (b != null) b.length else -1
+    //완전한 if -식 외에, 엘비스 연산자인 ?: 를 사용해서 다음과 같이 표현할 수도 있다:
+    //val l = b?.length ?: -1
+
+    //?: 의 왼쪽 식이 null이 아니면, 엘비스 연산자는 그것을 리턴하고, 그렇지 않으면 오른쪽 식을 리턴한다. 오른쪽 식은 왼쪽이 null일 경우에만 평가한다.
+    //코틀린에서 throw 와 return 은 식이므로, 엘비스 연산자의 오른쪽에 둘을 사용할 수 있다. 이는 함수 인자를 검사할 때 매우 유용하다:
+    //fun foo(node: Node): String? {
+    //val parent = node.getParent() ?: return null
+    //val name = node.getName() ?: throw IllegalArgumentException("name expected")
+    //// ...
+    //}
+
+
+
+
+
+
+    //!! 연산자
+    //!! 연산자는 NPE를 선호나는 개발자를 위한 세 번째 옵션이다. b!! 라고 작성하면 b 가 null이 아니면 b를 리턴하고(예를 들어, String ), null이면 NPE를
+    //발생한다:
+
+
+    //val l = b!!.length
+    //따라서 NPE를 원한다면 이 연산자를 사용하면 된다. 하지만, NPE는 명시적으로 사용해야 하며 뜻밖의 코드에서 나타나지 않도록 한다.
+
+
+    //안전한 타입 변환
+    //일반 타입 변환은 객체가 지정한 타입이 아니면 ClassCastException 을 발생한다. 타입 변환 방법을 위한 다른 방법은 타입 변환에 실패하면 null 을 리턴하는
+    //안전한 타입 변환을 사용하는 것이다:
+    val aInt: Int? = x as? Int
+
+
+    //null 가능 타입의 콜렉션
+    //null 가능 타입의 요소를 갖는 콜렉션에서 null이 아닌 요소를 걸러내고 싶다면, filterNotNull 를 사용한다:
+    val nullableList: List<Int?> = listOf(1, 2, null, 4)
+    val intList: List<Int> = nullableList.filterNotNull()
+
+
+    //익셉션
+    //익셉션 클래스
+
+//    코틀린의 모든 익셉션 클래스는 Throwable 클래스의 자식 클래스이다. 모든 익셉션은 메시지, 스택 트레이스, 선택적인 원인을 포함한다.
+//    익셉션 객체를 던지려면, throw -식을 사용한다:
+//    throw MyException("Hi There!")
+//    익셉션을 잡으려면 try -식을 사용한다:
+        try {
+            // 어떤 코드
+        }
+        catch (e: Exception) {
+            // 익셉션 처리
+        }
+        finally {
+            // 선택적인 finally 블록
+        }
+//        catch 블록은 없거나 여러 개 올 수 있다. finally 블록은 생략할 수 있다. 하지만, 최소 한 개의 catch 블록이나 finally 블록은 존재해야 한다:
+
+    //try는 식이다
+    //try 는 식이어서 값을 리턴할 수 있다:
+    //val a: Int? = try { parseInt(input) } catch (e: NumberFormatException) { null }
+    //try -식이 리턴한 값은 try 블록의 마지막 식이거나 catch 블록(또는 블록들의)의 마지막 식이다. finally 블록의 내용은 식의 결과에 영향을 주지 않는다.
+
+
+    //Checked 익셉션
+    //코틀린에는 Checked 익셉션이 없다. 여기에는 여러 이유가 있는데, 간단한 예로 살펴보자.
+    //다음은 JDK의 StringBuilder 클래스가 구현한 인터페이스 예이다.
+    //Appendable append(CharSequence csq) throws IOException;
+
+
+    //이 시그너처는 무엇을 말할까? 이것은 어딘가에( StringBuilder , 어떤 종류의 로그, 콘솔 등) 문자열을 추가할 때마다 IOExceptions 을 잡아야 한다고 말한
+    //다. 왜? 그것이 IO 연산을 할 수도 있기 때문이다( Writer 도 Appendable 를 구현하고 있다). 이는 모든 곳에 다음과 같이 익셉션을 무시하는 코드를 만든다:
+    //try {
+    //log.append(message)
+    //}
+    //catch (IOException e) {
+    //// 안전해야 함
+    //}
+
+
+
+
+
+
+    //코틀린에서 throw 는 식이므로, 식을 사용할 수 있다. 예를 들어, 엘비스 식에서 사용할 수 있다:
+    val s = x ?: throw IllegalArgumentException("Name required")
+
+//    throw 식의 타입은 특수 타입인 Nothing 이다. 이 타입은 값을 갖지 않으면 도달할 수 없는 코드를 표시하는 용도로 사용한다. 코드에서 리턴하지 않는 함수를 표시
+//    할 때 Nothing 을 사용할 수 있다:
+    fun fail(message: String): Nothing {
+        throw IllegalArgumentException(message)
+    }
+
+
+//    이 함수를 호출하면, 컴파일러는 호출 이후 실행이 계속되지 않는 것을 알 것이다:
+    val s2 = x ?: fail("Name required")
+    println(s2)
+
+
+
+
+//    Nothing 타입을 만나는 또 다른 경우는 타입 추론이다. Nothing의 null 가능 타입인 Nothing? 은 정확하게 null 한 가지 값만 가진다. null 을 사용해서 추론
+//            할 타입의 값을 초기화하면 더 구체적인 타입을 결정할 수 있는 다른 정보가 없기 때문에 컴파일러는 Nothing? 타입으로 유추한다:
+    val s3 = null // 'x'는 `Nothing?` 타입을 가짐
+    val l = listOf(null) // 'l'은 `List<Nothing?> 타입을 가짐
+
+
+
+
+
+    //애노테이션
+//    애노테이션은 코드에 메타데이터를 붙이는 방법이다. 클래스 앞에 annotation 수식어를 붙여서 애노테이션을 선언한다:
+//    annotation class Fancy
+
+
+    //애노테이션 클래스에 메타-애노테이션을 붙여서 애노테이션에 추가 속성을 지정할 수 있다:
+    //@Target 은 애노테이션을 어떤 요소에(클래스, 함수, 프로퍼티, 식 등) 적용할 수 있는지 지정한다.
+    //@Retention 은 애노테이션을 컴파일한 클래스 파일에 보관할지, 런타임에 리플렉션을 통해서 접근할 수 있는지를 지정한다. (기본값은 둘 다 true이다.)
+    //@Repeatable 은 한 요소의 같은 애노테이션을 여러 번 적용하는 것을 허용한다.
+    //@MustBeDocumented 은 애노테이션이 공개 API에 속하며 생성한 API 문서에 클래스나 메서드 시그너처를 포함시켜야 함을 지정한다.
+
+    //@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION,
+    //AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.EXPRESSION)
+    //@Retention(AnnotationRetention.SOURCE)
+    //@MustBeDocumented
+    //annotation class Fancy
+
+
+//    @Fancy class Foo {
+//        @Fancy fun baz(@Fancy foo: Int): Int {
+//            return (@Fancy 1)
+//        }
+//    }
+//    클래스의 주요 생성자에 애노테이션이 필요하면, constructor 키워드를 생성자 선언에 추가하고 그 앞에 애노테이션을 추가해야 한다:
+//    class Foo @Inject constructor(dependency: MyDependency) {
+//// ...
+//    }
+//    프로퍼티 접근자에도 애노테이션을 붙일 수 있다:
+//    class Foo {
+//        var x: MyDependency? = null
+//            @Inject set
+//    }
+
+
+
+    //생성자
+    //애노테이션은 파라미터가 있는 생성자를 가질 수 있다
+    //annotation class Special(val why: String)
+    //@Special("example") class Foo {}
+    //허용하는 파라미터 타입은 다음과 같다:
+    //자바 기본 타입에 대응하는 타입(Int, Long 등)
+    //문자열
+    //클래스 ( Foo::class )
+    //열거 타입
+    //다른 애노테이션
+    //위에서 열거한 타입의 배열
+    //추가 파라미터는 null 가능 타입일 수 없는데, 왜냐면 JVM은 애노테이션 속성의 값으로 null 을 저장하는 것을 지원하지 않기 때문이다.
+
+
+
+    //다른 애노테이션의 파라미터로 애노테이션을 사용할 경우, 해당 애노테이션의 이름에 @ 문자를 접두어로 붙이지 않는다.
+    //annotation class ReplaceWith(val expression: String)
+    //annotation class Deprecated(
+    //val message: String,
+    //val replaceWith: ReplaceWith = ReplaceWith(""))
+    //@Deprecated("This function is deprecated, use === instead", ReplaceWith("this === other"))
+    //애노테이션의 인자로 클래스를 사용하고 싶다면, 코틀린 클래스( KClass )를 사용한다. 코틀린 컴파일러는 이를 자동으로 자바 클래스로 변환하므로, 자바 코드에서 애노테
+    //이션과 인자를 사용할 수 있다.
+    //import kotlin.reflect.KClass
+//    annotation class Ann(val arg1: KClass<*>, val arg2: KClass<out Any?>)
+//    @Ann(String::class, Int::class) class MyClass
+
+
+
+
+    //람다
+//    람다에도 애노테이션을 사용할 수 있다. 람다의 몸체에 생성한 invoke() 메서드에 적용된다. 병렬 제어를 위해 애노테이션을 사용하는 Quasar 와 같은 프레임워크에
+//    서 이를 유용하게 사용한다.
+    annotation class Suspendable
+    val f = @Suspendable { Thread.sleep(10) }
+
+
+
+
+    //애노테이션 사용 위치 대상
+//    프로퍼티나 주요 생성자 파라미터에 애노테이션을 적용할 때, 코틀린 요소에서 여러 자바 요소가 생성될 수 있고 따라서 생성된 자바 바이트코드에는 애노테이션이 여러 위
+//    치에 붙을 수 있다. 애노테이션을 정확하게 어떻게 생성할지 지정하려면 다음 구문을 사용한다:
+//    class Example(@field:Ann val foo, // 자바 필드에 적용
+//                  @get:Ann val bar, // 자바 getter에 적용
+//                  @param:Ann val quux) // 자바 생성자 파라미터에 적용
+//    파일에 애노테이션을 적용하기 위해 같은 구문을 사용할 수 있다. 이를 위해 파일의 최상단에 패키지 디렉티브 이전에 또는 기본 패키지면 모든 임포트 이전에 적용 대상으로
+//    file 을 가진 애노테이션을 붙인다:
+//    @file:JvmName("Foo")
+//    package org.jetbrains.demo
+//    동일 대상에 여러 애노테이션을 붙일 경우 대상 뒤의 대괄호에 모든 애노테이션을 위치시켜서 대상을 반복하는 것을 피할 수 있다:
+//    class Example {
+//        @set:[Inject VisibleForTesting]
+//        var collaborator: Collaborator
+//    }
+//    지원하는 사용 위치 대상은 다음과 같다:
+//    file
+//    property (이 대상을 가진 애노테이션은 자바에는 보이지 않는다)
+//    field
+//    get (프로퍼티 getter)
+//    set (프로퍼티 setter)
+//    receiver (확장 함수나 프로퍼티의 리시버 파라미터)
+//    param (생성자 파라미터)
+//    람다
+//    애노테이션 사용 위치 대상
+//    —
+//    setparam (프로퍼티 setter 파라미터)
+//    delegate (위임 프로퍼티의 위임 인스턴스를 보관하는 필드)
+//    확장 함수의 리시버 파라미터에 애노테이션을 붙이려면 다음 구문을 사용한다:
+//    fun @receiver:Fancy String.myExtension() { }
+//    사용 위치 대상을 지정하지 않으면, 사용할 애노테이션의 @Target 애노테이션에 따라 대상을 선택한다. 적용 가능한 대상이 여러 개면, 다음 목록에서 먼저 적용가능한
+//    대상을 사용한다:
+//    param
+//    property
+//    field
+
+
+
+    //자바 애노테이션
+    //자바 애노테이션은 코틀린과 100% 호환된다:
+
+    //리플렉션
+    /*
+    리플렉션은 란타임에 프로그램의 구조를 볼 수 있게 해주는 라이브러리와 언어 특징이다. 코틀린에서 함수와 프로퍼티는 1급이며, 이 둘의 내부를 알아내는 것은(예, 런타임
+    에 이름, 프로퍼티 타입이나 함수를 알아내는 것) 함수형 또는 리액티브 방식을 간단하게 사용하는 것과 밀접하게 관련있다.
+    자바에서 리플렌션 특징을 사용하는데 필요한 런타임 컴포넌트는 별도 JAR 파일( kotlin-reflect.jar )로 제공한다. 이를 통해 리플렉션 특징을 사용
+    하지 않는 어플리케이션이 필요로 하는 런타임 라이브러리의 크기를 줄였다. 리플렉션을 사용한다면 그 jar 파일을 프로젝트의 클래스패스에 추가해야 한다.
+     */
+
+
+    //클래스 레퍼런스
+//    가장 기본적인 리플렉션 특징은 코틀린 클래스에 대한 런타임 레퍼런스를 구하는 것이다. 정적으로 알려진 코틀린 클래스에 대한 레퍼런스를 얻으려면 class 리터럴 구문을
+//    사용하면 된다:
+    val c = MyClass::class
+    //레퍼런스의 값은 KClass 타입이다.
+    //코틀린 클래스 레퍼런스는 자바 클래스 레퍼런스와 같지 않다. 자바 클래스 레퍼런스를 구하려면 KClass 인스턴스의 .java 프로퍼티를 사용한다.
+    //val widget: Widget = ...
+    //assert(widget is GoodWidget) { "Bad widget: ${widget::class.qualifiedName}" }
+    //예를 들어, 위 코드는 리시버 식의 타입( Widget )에 상관없이 GoodWidget 또는 BadWidget 인스턴스의 클래스에 대한 레퍼런스를 구한다.
+
+
+
+    //함수 레퍼런스
+    //다음과 같이 이름 가진 함수를 선언했다고 하자:
+//    fun isOdd(x: Int) = x % 2 != 0
+//    isOdd(5) 와 같이 쉽게 함수를 바로 호출할 수 있지만, 또한 함수를 값으로 다른 함수에 전달할 수 있다. 이를 위해 :: 연산자를 사용한다:
+//    val numbers = listOf(1, 2, 3)
+//    println(numbers.filter(::isOdd)) // [1, 3] 출력
+//    여기서 ::isOdd 는 함수 타입 (Int) -> Boolean 의 값이다.
+//    :: 는 문백을 통해 원하는 타입을 알 수 있을 때, 오버로딩한 함수에서도 사용할 수 있다. 다음 예를 보자:
+//    fun isOdd(x: Int) = x % 2 != 0
+//    fun isOdd(s: String) = s == "brillig" || s == "slithy" || s == "tove"
+//    val numbers = listOf(1, 2, 3)
+//    println(numbers.filter(::isOdd)) // isOdd(x: Int)를 참조
+//    또는 변수에 명시적으로 타입을 지정해서 메서드 레퍼런스를 저장할 때 필요한 문맥을 제공할 수 있다:
+//    val predicate: (String) -> Boolean = ::isOdd // isOdd(x: String)를 참고
+//    클래스 멤버나 확장 함수를 사용해야 한다면 한정자를 붙여야 한다. 예를 들어, String::toCharArray 는 String : String.() -> CharArray 타입
+//    을 위한 확장 함수를 제공한다.
+//            다음 함수를 보자:
+
+
+
+
+    fun <A, B, C> compose(f: (B) -> C, g: (A) -> B): (A) -> C {
+        return { x -> f(g(x)) }
+    }
+//    이 함수는 파라미터로 전달한 두 함수를 조합한다( compose(f, g) = f(g(*)) ). 이제 이 함수에 호출가능한 레퍼런스를 적용할 수 있다:
+//    fun length(s: String) = s.length
+//    val oddLength = compose(::isOdd, ::length)
+//    val strings = listOf("a", "ab", "abc")
+//    println(strings.filter(oddLength)) // "[a, abc]" 출력
+
+
+    //프로퍼티 참조
+    //코틀린에서 1급 객체로서 프로퍼티에 접근할 때에도 :: 연산자를 사용한다:
+//    var x6 = 1
+//    fun main(args: Array<String>) {
+//        println(::x6.get()) // "1" 출력
+//        ::x6.set(2)
+//        println(x) // "2" 출력
+//    }
+
+
+
+
+    //::x 식은 KProperty<Int> 타입의 프로퍼티 객체로 평가하는데 이는 get() 을 사용해서 프로퍼티의 값을 읽거나 name 프로퍼티를 사용해서 프로퍼티 이
+    //름을 가져올 수 있도록 해 준다. 더 자세한 정보는 KProperty 클래스 문서 를 참고한다.
+    //수정 가능한 프로퍼티, 예를 들어 var y = 에 대해 ::y 는 set() 함수를 가진 KMutableProperty<Int> 타입의 값을 리턴한다.
+    //파라미터가 없는 함수가 필요한 곳에 프로퍼티 레퍼런스를 사용할 수 있다:
+    //val strs = listOf("a", "bc", "def")
+    //println(strs.map(String::length)) // [1, 2, 3] 출력
+    //클래스 멤버인 프로퍼티에 접근할 때에는 클래스로 한정한다:
+    //class A(val p: Int)
+    //fun main(args: Array<String>) {
+    //val prop = A::p
+    //println(prop.get(A(1))) // "1" 출력
+    //}
+    //확장 프로퍼티의 경우:
+    //val String.lastChar: Char
+    //get() = this[length - 1]
+    //fun main(args: Array<String>) {
+    //println(String::lastChar.get("abc")) // "c" 출력
+    //}
+
+
+
+    //타입 별칭
+//    타입 별칭은 타입을 위한 다른 이름을 제공한다. 타입 이름이 너무 길면 더 짧은 이름을 추가해서 그 이름을 대신 사용할 수 있다.
+//    이는 긴 지네릭 타입 이름을 짧게 만들 때 유용하다. 예를 들어, 콜렉션 타입을 축약할 때 사용한다.
+//    typealias NodeSet = Set<Network.Node>
+//    typealias FileTable<K> = MutableMap<K, MutableList<File>>
+//    함수 타입을 위한 다른 별칭을 제공할 수 있다:
+//    typealias MyHandler = (Int, String, Any) -> Unit
+//    typealias Predicate<T> = (T) -> Boolean
+//    내부와 중첩 클래스를 위한 새 이름을 가질 수 있다:
+//    class A {
+//        inner class Inner
+//    }
+//    class B {
+//        inner class Inner
+//    }
+//    typealias AInner = A.Inner
+//    typealias BInner = B.Inner
+//    타입 별칭이 새 타입을 추가하는 것은 아니다. 대응하는 기저 타입은 동일하다. 코드에 typealias Predicate<T> 를 추가하고 Predicate<Int> 를 사용하
+//    면 코틀린 컴파일러는 이를 (Int) -> Boolean 로 확장한다. 그래서 일반 함수 타입이 필요한 곳에 별칭 타입 변수를 전달할 수 있으며 반대도 가능하다:
+//    typealias Predicate<T> = (T) -> Boolean
+//    fun foo(p: Predicate<Int>) = p(42)
+//    fun main(args: Array<String>) {
+//        val f: (Int) -> Boolean = { it > 0 }
+//        println(foo(f)) // "true" 출력
+//        val p: Predicate<Int> = { it > 0 }
+//        println(listOf(1, -2).filter(p)) // "[1]" 출력
+//    }
 }
